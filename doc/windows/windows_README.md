@@ -46,7 +46,7 @@ Changes specific to support the Visual Studio IDE
 
 ## Using the LLM.c Makefile in Windows
 
-\![image\](https://github.com/rosslwheeler/llm.c/blob/a89a07c7263b1aa69a7de585a9b684edf42a8c15/doc/windows/Makefile_screenshot.jpg)
+![alt text](Makefile_screenshot.jpg)
 
 #### Requirements/Assumptions:
 
@@ -115,7 +115,7 @@ and execute one test to confirm functionality.
 
 ## Visual Studio IDE Support
 
-\![image\](https://github.com/rosslwheeler/llm.c/blob/a89a07c7263b1aa69a7de585a9b684edf42a8c15/doc/windows/IDE.jpg)
+![alt text](IDE.jpg)
 
 #### Requirements/Assumptions:
 
@@ -151,7 +151,7 @@ There are 3 precision types for the Cuda build:
 The default is currently set to BF16 but you can change this value as
 shown in the train_gpt2_cu AND test_gpt2_cu projects:
 
-\![image\](https://github.com/rosslwheeler/llm.c/blob/a89a07c7263b1aa69a7de585a9b684edf42a8c15/doc/windows/precision_config.jpg)
+![alt text](precision_config.jpg)
 
 Please make sure and rebuild after changing this preprocessor
 definition.
@@ -240,7 +240,7 @@ Below is a screen shot of the Diagnostic tools in the IDE -- note the
 CPU's being at 100 percent. This is OpenMP making use of all of the
 threads in your system. Efficient!
 
-\![image\](https://github.com/rosslwheeler/llm.c/blob/a89a07c7263b1aa69a7de585a9b684edf42a8c15/doc/windows/openmp.jpg)
+![alt text](openmp.jpg)
 
 ### Continuous Integration (CI) support with GitHub Actions
 
