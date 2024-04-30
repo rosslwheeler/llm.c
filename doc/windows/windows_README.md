@@ -46,7 +46,9 @@ Changes specific to support the Visual Studio IDE
 
 ## Using the LLM.c Makefile in Windows
 
-\![image\](https://github.com/rosslwheeler/llm.c/assets/55313766/62305234-852f-4c96-a0ad-b623f58038c0)
+\![image\]( [llm.c/doc/windows/Makefile_screenshot.jpg at windows-readme
+· rosslwheeler/llm.c
+(github.com)](https://github.com/rosslwheeler/llm.c/blob/windows-readme/doc/windows/Makefile_screenshot.jpg))
 
 #### Requirements/Assumptions:
 
@@ -115,7 +117,9 @@ and execute one test to confirm functionality.
 
 ## Visual Studio IDE Support
 
-\![image\](https://github.com/rosslwheeler/llm.c/assets/55313766/c5a55f2d-56b3-4769-9d55-4842b5f41176)
+\![image\]( [llm.c/doc/windows/IDE.jpg at windows-readme ·
+rosslwheeler/llm.c
+(github.com)](https://github.com/rosslwheeler/llm.c/blob/windows-readme/doc/windows/IDE.jpg))
 
 #### Requirements/Assumptions:
 
@@ -151,7 +155,9 @@ There are 3 precision types for the Cuda build:
 The default is currently set to BF16 but you can change this value as
 shown in the train_gpt2_cu AND test_gpt2_cu projects:
 
-\![image\](https://github.com/rosslwheeler/llm.c/assets/55313766/775e2f37-74a7-4629-a723-467eedd12972)
+\![image\]( [llm.c/doc/windows/precision_config.jpg at windows-readme ·
+rosslwheeler/llm.c
+(github.com)](https://github.com/rosslwheeler/llm.c/blob/windows-readme/doc/windows/precision_config.jpg))
 
 Please make sure and rebuild after changing this preprocessor
 definition.
@@ -240,7 +246,9 @@ Below is a screen shot of the Diagnostic tools in the IDE -- note the
 CPU's being at 100 percent. This is OpenMP making use of all of the
 threads in your system. Efficient!
 
-\![image\](https://github.com/rosslwheeler/llm.c/assets/55313766/3439ff44-06bd-46a3-bf58-dbd1ac697f57)
+\![image\]( [llm.c/doc/windows/openmp.jpg at windows-readme ·
+rosslwheeler/llm.c
+(github.com)](https://github.com/rosslwheeler/llm.c/blob/windows-readme/doc/windows/openmp.jpg))
 
 ### Continuous Integration (CI) support with GitHub Actions
 
