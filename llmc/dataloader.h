@@ -96,13 +96,6 @@ int64_t dataloader_load_shard_(DataLoader *loader, int shard_index) {
     return ntok;
 }
 
-void dataloader_resume(DataLoader *loader, size_t current_shard_idx, size_t current_sample_idx) {
-    // used during model resumption (-y 1) flag
-    loader->current_shard_idx = current_shard_idx;
-    loader->current_sample_idx = current_sample_idx;
-    dataloader_load_shard_(loader, loader->current_shard_idx);
-}
-
 void prepare_intra_shard_indices_(DataLoader *loader) {
     // shuffle the examples inside the shards
     if (loader->intra_shard_indices != NULL) {
@@ -110,7 +103,8 @@ void prepare_intra_shard_indices_(DataLoader *loader) {
         free(loader->intra_shard_indices);
     }
     loader->intra_shard_indices = (int*)mallocCheck(loader->shard_num_samples * sizeof(int));
-    random_permutation_with_init(loader->intra_shard_indices, loader->shard_num_samples, &loader->shuffle_rng, 1);
+    init_identity_permutation(loader->intra_shard_indices, loader->shard_num_samples);
+    random_permutation(loader->intra_shard_indices, loader->shard_num_samples, &loader->shuffle_rng);
 }
 
 void dataloader_reset(DataLoader *loader) {
@@ -118,7 +112,7 @@ void dataloader_reset(DataLoader *loader) {
     loader->current_sample_idx = 0;
 
     if (loader->should_shuffle) {  // shuffle the shards
-        random_permutation_with_init(loader->shard_indices, loader->glob_result.gl_pathc, &loader->shuffle_rng, 0);
+        random_permutation(loader->shard_indices, loader->glob_result.gl_pathc, &loader->shuffle_rng);
     }
 
     dataloader_load_shard_(loader, loader->current_shard_idx);
@@ -178,9 +172,7 @@ void dataloader_init(DataLoader *loader,
         manual_seed(&shuffle_rng, 42 + process_rank);
         loader->shuffle_rng = shuffle_rng;
         loader->shard_indices = (int*)mallocCheck(loader->glob_result.gl_pathc * sizeof(int));
-        for (int i = 0; i < loader->glob_result.gl_pathc; i++) {
-            loader->shard_indices[i] = i;  // start with identity permutation
-        }
+        init_identity_permutation(loader->shard_indices, loader->glob_result.gl_pathc);
         loader->intra_shard_indices = NULL;  // dynamically allocated allowing different shard sizes
     }
 
@@ -208,10 +200,9 @@ void dataloader_init(DataLoader *loader,
     dataloader_reset(loader);
 }
 
-void dataloader_next_batch(DataLoader *loader) {
+void dataloader_load_batch(DataLoader* loader) {
     assert(!loader->should_shuffle || (loader->should_shuffle && loader->intra_shard_indices != NULL));
     assert(loader->current_sample_idx < loader->shard_num_samples);
-
     size_t idx = loader->should_shuffle ? loader->intra_shard_indices[loader->current_sample_idx] : loader->current_sample_idx;
     size_t global_batch_offset_bytes = idx * loader->total_batch_size_bytes;
     int64_t current_offset = loader->header_bytes + global_batch_offset_bytes + loader->local_batch_offset_bytes;
@@ -226,12 +217,23 @@ void dataloader_next_batch(DataLoader *loader) {
         loader->inputs[i] = (int)loader->buffer[i];
         loader->targets[i] = (int)loader->buffer[i+1];
     }
+}
 
-    loader->current_sample_idx += 1;
+void dataloader_next_batch(DataLoader *loader) {
     // if the next batch would go past the end of the file, advance the loader
     if (loader->current_sample_idx >= loader->shard_num_samples) {
         dataloader_advance_(loader);
     }
+    dataloader_load_batch(loader);
+    loader->current_sample_idx += 1;
+}
+
+
+void dataloader_resume(DataLoader *loader, size_t current_shard_idx, size_t current_sample_idx) {
+    // used during model resumption (-y 1) flag
+    loader->current_shard_idx = current_shard_idx;
+    loader->current_sample_idx = current_sample_idx;
+    dataloader_load_shard_(loader, loader->current_shard_idx);
 }
 
 void dataloader_free(DataLoader *loader) {
